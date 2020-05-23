@@ -453,7 +453,7 @@ namespace GT808Simulator
         public byte CarColor;
 
         //最后是GBK字串,车牌号
-        public string CarNumber;
+        public byte[] CarNumber;
     }
 
     /// <summary>
@@ -462,17 +462,22 @@ namespace GT808Simulator
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
     public class ClientRegistReturnPack
     {
-        public static Int32 PackSize = Marshal.SizeOf(typeof(ClientRegistPack));
+        public static Int32 PackSize = Marshal.SizeOf(typeof(ClientRegistReturnPack));
 
         /// <summary>
         /// 自增一序列号
         /// </summary>
-        public BigEndianUInt16 SeqNum;
+        public BigEndianUInt16 SeqNO;
 
         /// <summary>
         /// 0成功, 1车辆已经注册, 2数据库中无此车辆, 3终端已经被注册, 4数据库中无该终端
         /// </summary>
-        public Byte Result;
+        public byte Result;
+
+        /// <summary>
+        /// 鉴权码
+        /// </summary>
+        public byte[] AuthCode;
     }
 
     /// <summary>

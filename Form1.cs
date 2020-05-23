@@ -12,7 +12,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Gps.Plugin.Common.Helpers;
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
+using System.Data.SQLite;
 
 namespace GT808Simulator
 {
@@ -20,7 +21,7 @@ namespace GT808Simulator
     {
         protected static log4net.ILog log = null;
         string connstr = ConfigurationManager.AppSettings["connstr"];// "data source=10.1.97.7;database=gt808Simulator;user id=miracle;password=hl@mic@201905;pooling=false;charset=utf8";//pooling代表是否使用连接池
-        MySqlConnection conn = null;
+        //MySqlConnection conn = null;
         private string ip;
         private int port;
         //private string deviceId;
@@ -34,7 +35,7 @@ namespace GT808Simulator
         {
             log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
             log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-            conn = new MySqlConnection(connstr);
+            //conn = new MySqlConnection(connstr);
             InitializeComponent();
 
             string line = ConfigurationManager.AppSettings["remoteServerPort"];
@@ -71,6 +72,10 @@ namespace GT808Simulator
                 tcp.Connect(IPAddress.Parse(ip), port);
                 toolStripStatusLabel1.Text = "已连接：" + this.ip + ":" + this.port;
                 toolStripStatusLabel1.ForeColor = Color.Green;
+                if(checkBoxPump.Checked)
+                {
+
+                }
                 MessageBox.Show("成功连接到服务器：" + this.ip + ":" + this.port, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             //catch (ThreadAbortException)
@@ -99,17 +104,39 @@ namespace GT808Simulator
             }
             catch { }
         }
-
+        private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            //MessageBox.Show(e.ToString());
+        }
         private void button1_Click(object sender, EventArgs e)
         {
-            //int number = 512;
-            //Console.WriteLine(number.ToString("X"));
-            //Console.WriteLine(Convert.ToString(number,16));
-            //Console.WriteLine(Convert.ToInt32(Convert.ToString(number,16),16));
-            //byte b = new byte();
-            //Console.WriteLine("".HexStringToBytes.toHexString("k"));
-            //"0x" + Integer.toHexString(k)
+            //   8100-0003-0-10302035743-FFFF00010397"
+            //7E810000230-10302035743-00030003003936424431303542324646373442323541374538433233314137334543443846BF7E
+            //7E810000230-10302035743-00040004003242343831443441384641463431423938444237313339393635364141363230C47E
+            //byte[] b1 = new byte()[1024];
+
+
+            //7E8100002301234567898700020002004130433443463637303945333439344138323033443839393232434246393537A07E
+            string s1 = "3736424146354237363246453430393341393035313630414136414435313032DE";
+            byte[] b1 = HexStrTobyte(s1);
+
+            string ss = System.Text.Encoding.Default.GetString(b1);
+
+          
         }
+
+        private byte[] HexStrTobyte(string hexString)
+        {
+            hexString = hexString.Replace(" ", "");
+            if ((hexString.Length % 2) != 0)
+                hexString += " ";
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2).Trim(), 16);
+            return returnBytes;
+        }
+
+
         private void btnSend_Click(object sender, EventArgs e)
         {
             if(!tcp.Connected)
@@ -156,17 +183,17 @@ namespace GT808Simulator
             head.SetDeviceId(this.txtDeviceId.Text.Trim());
             ClientRegistPack pack = new ClientRegistPack()
             {
-                //Province = Convert.ToUInt16("32"),
-                //City = Convert.ToUInt16("1100"),
-                //Manufacturer="10750".HexStringToBytes(),
-                //DeviceModel="BSJ-GF01".HexStringToBytes(),
-                //DeviceId="".HexStringToBytes(),
-                //CarColor=2,
-                //CarNumber= ""
+                Province = Convert.ToUInt16("32"),
+                City = Convert.ToUInt16("1100"),
+                Manufacturer = new byte[5],
+                DeviceModel = new byte[20],
+                DeviceId = new byte[7],
+                CarColor = 2,
+                CarNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim())
             };
-
+            //7E0100002D01234567898700010020044C000000000000000000000000000000000000000000000000000000000000000002F02716CA9D010000DE7E
             byte[] bytesSend = RawFormatter.Instance.Struct2Bytes(pack);
-            
+
             BodyPropertyHelper.SetMessageLength(ref head.BodyProp, (ushort)bytesSend.Length);
 
             byte[] headBytes = RawFormatter.Instance.Struct2Bytes(head);
@@ -177,7 +204,9 @@ namespace GT808Simulator
             .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
             .Concat(new byte[] { 0x7e })).ToArray();
 
-            SendMessage(bytesSend); 
+            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'), 0, bytesSend.ToHexString());
+
+            SendMessage(bytesSend);
         }
         /// <summary>
         /// 终端心跳
@@ -300,6 +329,7 @@ namespace GT808Simulator
                 }
             }
         }
+
         private bool RecvBytes(Socket tcp)
         {
             lock (bufferRecv)
@@ -307,47 +337,53 @@ namespace GT808Simulator
                 byte[] buffer = bufferRecv;
 
                 int received = tcp.Receive(buffer);
-                //received = tcp.ReceiveAsync.Receive(buffer);
+                //tcp.ReceiveAsync(OnReceiveCompleted());
+
+                byte[] originalBytes = new byte[received];
+                Buffer.BlockCopy(buffer, 0, originalBytes, 0, received);
 
                 byte[] bytesReceived = PackHelper.DecodeBytes(buffer, 1, received - 2);
-                int rightSize = HeadPack.PackSize + ServerAnswerPack.PackSize + 1;
-                if (bytesReceived.Length != rightSize)
-                {
-                    log.WarnFormat("返回消息长度不正确:" + bytesReceived.Length + "!=" + rightSize);
-                }
 
                 HeadPack headPack = new HeadPack();
                 RawFormatter.Instance.Bytes2Struct(headPack, bytesReceived, 0, HeadPack.PackSize);
+                byte result = 0;
 
-                ServerAnswerPack pack = new ServerAnswerPack();
-                RawFormatter.Instance.Bytes2Struct(pack, bytesReceived, HeadPack.PackSize, ServerAnswerPack.PackSize);
-
-                //ClientRegistReturnPack rpack = new ClientRegistReturnPack();
-                //RawFormatter.Instance.Bytes2Struct(rpack, bytesReceived, HeadPack.PackSize, ClientRegistReturnPack.PackSize);
-
-
-                if (pack.Result != 0)
+                if (headPack.MessageId == (ushort)MessageIds.ClientRegistReturn)
                 {
-                    log.WarnFormat("发送失败:" + pack.Result.ToString());
+                    //7E8100002301030203574300030003003936424431303542324646373442323541374538433233314137334543443846BF7E
+                    //7E8100002301030203574300040004003242343831443441384641463431423938444237313339393635364141363230C47E
+                    //7E8100002301030203574300010001004541303242343439444131303437463138354344353442303243323343354343C77E
+                    //7E81000003010302035743-FFFF000103977E
+                    //7E81000003010302035743-0000000103977E
+                    //7E -8100-0003-010302035743-0000-00-02-03-94-7E
+
+                    ClientRegistReturnPack pack = new ClientRegistReturnPack();
+                    RawFormatter.Instance.Bytes2Struct(pack, bytesReceived, HeadPack.PackSize, ClientRegistReturnPack.PackSize);
+                    result = pack.Result;
                 }
-                
+                else//服务器通用应答包
+                {
+                    ServerAnswerPack pack = new ServerAnswerPack();
+                    RawFormatter.Instance.Bytes2Struct(pack, bytesReceived, HeadPack.PackSize, ServerAnswerPack.PackSize);
+                    result = pack.Result;
+                }
+
                 int index = this.dataGridView1.Rows.Add();
                 this.dataGridView1.Rows[index].Cells[0].Value = "↓";
                 this.dataGridView1.Rows[index].Cells[1].Value = headPack.GetDeviceId();
                 this.dataGridView1.Rows[index].Cells[2].Value = DateTime.Now;
                 this.dataGridView1.Rows[index].Cells[3].Value = headPack.SeqNO;
                 this.dataGridView1.Rows[index].Cells[4].Value = "0x" + Convert.ToString(headPack.MessageId, 16).PadLeft(4, '0');
-                this.dataGridView1.Rows[index].Cells[5].Value = pack.Result;
-                this.dataGridView1.Rows[index].Cells[6].Value = bytesReceived.ToHexString();
+                this.dataGridView1.Rows[index].Cells[5].Value = result;
+                this.dataGridView1.Rows[index].Cells[6].Value = originalBytes.ToHexString();//bytesReceived.ToHexString();
 
                 DataGridViewCellStyle style = new DataGridViewCellStyle();
-                style.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+                style.BackColor = Color.SkyBlue;
                 this.dataGridView1.Rows[index].DefaultCellStyle = style;
 
                 //this.dataGridView1.Rows.Add("↓", headPack.GetDeviceId(), DateTime.Now, headPack.SeqNO, "0x" + Convert.ToString(headPack.MessageId, 16).PadLeft(4, '0'), pack.Result);
-
-                Console.WriteLine("SeqNO:{0} MessageId:{1} Result:{2}", pack.SeqNO, pack.MessageId, pack.Result);
-                return pack.Result == 0;
+                //Console.WriteLine("SeqNO:{0} MessageId:{1} Result:{2}", pack.SeqNO, pack.MessageId, pack.Result);
+                return result == 0;
             }
         }
 
@@ -358,10 +394,14 @@ namespace GT808Simulator
         //获取所用指令数据 
         private void InitDataTable()
         {
+            SQLiteConnection conn = new SQLiteConnection("Data Source=db.db;Version=3;");
             string sql = "SELECT * FROM `functionlist`";
-            MySqlCommand cmd = new MySqlCommand(sql, conn);
-            conn.Open();
-            MySqlDataAdapter ada = new MySqlDataAdapter(cmd);
+            //MySqlCommand cmd = new MySqlCommand(sql, conn);
+            SQLiteCommand cmd = new SQLiteCommand(sql, conn);
+
+            //MySqlDataAdapter ada = new MySqlDataAdapter(cmd);
+            SQLiteDataAdapter ada = new SQLiteDataAdapter(cmd);
+
             dt = new DataTable();
             ada.Fill(dt);
             conn.Close();
@@ -370,7 +410,7 @@ namespace GT808Simulator
         //绑定根节点 
         private void BindRoot()
         {
-            DataRow[] rows = dt.Select("parentfunctionid=0");
+            DataRow[] rows = dt.Select("ParentFunctionID=0");
             //取根 
             foreach (DataRow dRow in rows)
             {
@@ -386,9 +426,9 @@ namespace GT808Simulator
         {
             DataRow dr = (DataRow)fNode.Tag;
             //父节点数据关联的数据行 
-            int parentFunctionID = (int)dr["functionid"];
+            string parentFunctionID = dr["FunctionID"].ToString();
             //父节点ID 
-            DataRow[] rows = dt.Select("parentfunctionid=" + parentFunctionID);
+            DataRow[] rows = dt.Select("ParentFunctionID=" + parentFunctionID);
             //子区域 
             if (rows.Length == 0)//递归终止，区域不包含子区域时 
             {
@@ -406,7 +446,6 @@ namespace GT808Simulator
             }
         }
         #endregion
-
     }
 
     /// <summary>
