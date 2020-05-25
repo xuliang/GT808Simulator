@@ -161,7 +161,7 @@ namespace GT808Simulator
             //MessageIds.
             //MessageIds aaa = (MessageIds)Enum.Parse(typeof(MessageIds), cbFace.Text);
             string e1=Enum.GetName(typeof(MessageIds), 512);
-            string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>(MessageIds.PositionReport);
+            string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)512);
             string ss = System.Text.Encoding.Default.GetString(b1);
 
 
@@ -275,8 +275,11 @@ namespace GT808Simulator
             bytesSend = (new byte[] { 0x7e }
             .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
             .Concat(new byte[] { 0x7e })).ToArray();
-
-            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'), 0, bytesSend.ToHexString());
+            //////////////////////////////////////////////////////////////////////////
+            //string e1 = Enum.GetName(typeof(MessageIds), Convert.ToInt32(head.MessageId));
+            string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)Convert.ToInt32(head.MessageId));
+            /////////////////////////////////////////////////////////////////////////////
+            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0') + "(" + e2 + ")", 0, bytesSend.ToHexString());
 
             SendMessage(bytesSend);
         }
@@ -303,8 +306,11 @@ namespace GT808Simulator
             bytesSend = (new byte[] { 0x7e }
             .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
             .Concat(new byte[] { 0x7e })).ToArray();
-
-            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'), 0, bytesSend.ToHexString());
+            //////////////////////////////////////////////////////////////////////////
+            //string e1 = Enum.GetName(typeof(MessageIds), Convert.ToInt32(head.MessageId));
+            string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)Convert.ToInt32(head.MessageId));
+            /////////////////////////////////////////////////////////////////////////////
+            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0') + "(" + e2 + ")", 0, bytesSend.ToHexString());
 
             SendMessage(bytesSend); ;
         }
@@ -327,8 +333,11 @@ namespace GT808Simulator
             byte[]  bytesSend = (new byte[] { 0x7e }
             .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
             .Concat(new byte[] { 0x7e })).ToArray();
-
-            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'), 0, bytesSend.ToHexString());
+            //////////////////////////////////////////////////////////////////////////
+            //string e1 = Enum.GetName(typeof(MessageIds), Convert.ToInt32(head.MessageId));
+            string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)Convert.ToInt32(head.MessageId));
+            /////////////////////////////////////////////////////////////////////////////
+            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0') + "(" + e2 + ")", 0, bytesSend.ToHexString());
 
             SendMessage(bytesSend); ;
         }
@@ -404,9 +413,9 @@ namespace GT808Simulator
             .Concat(new byte[] { 0x7e })).ToArray();
             //////////////////////////////////////////////////////////////////////////
             //string e1 = Enum.GetName(typeof(MessageIds), Convert.ToInt32(head.MessageId));
-            //string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>(MessageIds.PositionReport);
+            string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)Convert.ToInt32(head.MessageId));
             /////////////////////////////////////////////////////////////////////////////
-            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'),0, bytesSend.ToHexString());
+            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0')+"("+e2+")",0, bytesSend.ToHexString());
 
             //Console.WriteLine("{0} {1}",head.SeqNO, bytesSend.ToHexString());
 
@@ -484,13 +493,16 @@ namespace GT808Simulator
                     RawFormatter.Instance.Bytes2Struct(pack, bytesReceived, HeadPack.PackSize, ServerAnswerPack.PackSize);
                     result = pack.Result;
                 }
-
+                //////////////////////////////////////////////////////////////////////////
+                //string e1 = Enum.GetName(typeof(MessageIds), Convert.ToInt32(headPack.MessageId));
+                string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)Convert.ToInt32(headPack.MessageId));
+                /////////////////////////////////////////////////////////////////////////////
                 int index = this.dataGridView1.Rows.Add();
                 this.dataGridView1.Rows[index].Cells[0].Value = "↓";
                 this.dataGridView1.Rows[index].Cells[1].Value = headPack.GetDeviceId();
                 this.dataGridView1.Rows[index].Cells[2].Value = DateTime.Now;
                 this.dataGridView1.Rows[index].Cells[3].Value = headPack.SeqNO;
-                this.dataGridView1.Rows[index].Cells[4].Value = "0x" + Convert.ToString(headPack.MessageId, 16).PadLeft(4, '0');
+                this.dataGridView1.Rows[index].Cells[4].Value = "0x" + Convert.ToString(headPack.MessageId, 16).PadLeft(4, '0') + "(" + e2 + ")";
                 this.dataGridView1.Rows[index].Cells[5].Value = result+ ((authCode) != "" ? "(" +authCode+")" : "") ;
                 this.dataGridView1.Rows[index].Cells[6].Value = originalBytes.ToHexString();
 

@@ -1015,54 +1015,67 @@ namespace GT808Simulator
         /// <summary>
         /// 终端通用应答
         /// </summary>
+        [Description("终端通用应答")]
         ClientAnswer = 0x0001,
         /// <summary>
         /// 终端心跳
         /// </summary>
+        [Description("终端心跳")]
         ClientPump = 0x0002,
         /// <summary>
         /// 终端注销
         /// </summary>
+        [Description("终端注销")]
         ClientUnregist = 0x0003,
         /// <summary>
         /// 终端注册
         /// </summary>
+        [Description("终端注册")]
         ClientRegist = 0x0100,
         /// <summary>
         /// 终端鉴权
         /// </summary>
+        [Description("终端鉴权")]
         ClientAuth = 0x0102,
         /// <summary>
         /// 位置信息汇报
         /// </summary>
+        [Description("位置信息")]
         PositionReport = 0x0200,
         /// <summary>
         /// 多媒体事件信息上传
         /// </summary>
+        [Description("多媒体事件信息上传")]
         MultimediaEventUpload = 0x0800,
         /// <summary>
         /// 多媒体数据上传
         /// </summary>
+        [Description("多媒体数据上传")]
         MultimediaUpload = 0x0801,
         /// <summary>
         /// 多媒体数据上传
         /// </summary>
+        [Description("多媒体数据上传")]
         MultimediaUploadAnswer = 0x8800,
         /// <summary>
         /// 平台通用应答
         /// </summary>
+        [Description("平台通用应答")]
         ServerAnswer = 0x8001,
         /// <summary>
         /// 终端注册应答
         /// </summary>
+        [Description("终端注册应答")]
         ClientRegistReturn = 0x8100,
         /// <summary>
         /// 立即拍照
         /// </summary>
+        [Description("立即拍照")]
         Photographe = 0x8801,
         /// <summary>
-        /// 下发文本
+        /// 文本下发
         /// </summary>
+        [Description("文本下发")]
         SendTextMessage = 0x8300
     }
     #endregion
