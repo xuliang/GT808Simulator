@@ -266,20 +266,33 @@ namespace GT808Simulator
             bitState.CarDrive = checkBox48.Checked;//新国标新增的
             #endregion
 
+            # region 附加信息
+            //里程
+            byte[] additionals = (new byte[] { 0x01 }.Concat(new byte[] { 0x04 }).Concat(Convert.ToInt32(textBoxMileage.Text).intToBytes2())).ToArray();//textBoxMileage
+            //油量
+            additionals = additionals.Concat(new byte[] { 0x02 }.Concat(new byte[] { 0x02 }).Concat(Convert.ToInt32(textBoxOli.Text).intToBytes2())).ToArray();
+            //定位卫星数
+            additionals = additionals.Concat(new byte[] { 0x31 }.Concat(new byte[] { 0x01 }).Concat(new byte[] { Convert.ToByte(textBoxGNSS.Text) })).ToArray();
+
+            #endregion
+
             PositionReportPack pack = new PositionReportPack()
             {
                 AlermFlags = BitConverter.ToUInt32(bitAlerm.GetBitValueAlerm(), 0),//0,
                 Speed = (ushort)(speed * 10),
-                State = BitConverter.ToUInt32(bitState.GetBitValueState(),0),//0,
+                State = BitConverter.ToUInt32(bitState.GetBitValueState(), 0),//0,
                 Latitude = Convert.ToUInt32(lat * 1000000),
                 Longitude = Convert.ToUInt32(lon * 1000000),
                 Altitude = Convert.ToUInt16(txtAltitude.Text),//200,
                 Direction = Convert.ToUInt16(txtDirection.Text),//0,
                 Time = DateTime.Now.ToString("yyMMddHHmmss")
+                //Additionals = Additionals
             };
 
             byte[] bytesSend = RawFormatter.Instance.Struct2Bytes(pack);
-
+            //位置基础包+附加信息包=完整的0x0200
+            bytesSend=bytesSend.Concat(additionals).ToArray();
+            //设置头里面body的长度。
             BodyPropertyHelper.SetMessageLength(ref head.BodyProp, (ushort)bytesSend.Length);
 
             byte[] headBytes = RawFormatter.Instance.Struct2Bytes(head);

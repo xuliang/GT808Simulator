@@ -56,7 +56,7 @@ namespace GT808Simulator
         /// </summary>
         /// <param name="value"> 要转换的int值</param>
         /// <returns>byte数组</returns>
-        public static byte[] intToBytes(int value)
+        public static byte[] intToBytes(this int value)
         {
             byte[] src = new byte[4];
             src[3] = (byte)((value >> 24) & 0xFF);
@@ -71,7 +71,7 @@ namespace GT808Simulator
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static byte[] intToBytes2(int value)
+        public static byte[] intToBytes2(this int value)
         {
             byte[] src = new byte[4];
             src[0] = (byte)((value >> 24) & 0xFF);
@@ -88,7 +88,7 @@ namespace GT808Simulator
         /// <param name="src">byte数组  </param>
         /// <param name="offset"> 从数组的第offset位开始</param>
         /// <returns>int数值 </returns>
-        public static int bytesToInt(byte[] src, int offset)
+        public static int bytesToInt(this byte[] src, int offset)
         {
             int value;
             value = (int)((src[offset] & 0xFF)
@@ -104,7 +104,7 @@ namespace GT808Simulator
         /// <param name="src"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        public static int bytesToInt2(byte[] src, int offset)
+        public static int bytesToInt2(this byte[] src, int offset)
         {
             int value;
             value = (int)(((src[offset] & 0xFF) << 24)
@@ -527,6 +527,12 @@ namespace GT808Simulator
         /// 时间
         /// </summary>
         public BCD8421_6BytesString Time;
+
+        /// <summary>
+        /// 位置附加信息
+        /// 类似于一个字典附加信息ID(byte)附加信息值(根据808协议)附加信息ID(byte)附加信息值(根据808协议)
+        /// </summary>
+        //public byte[] Additionals; 
     }
 
     /// <summary>

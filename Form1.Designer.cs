@@ -28,14 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.textBox8 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBoxOli = new System.Windows.Forms.TextBox();
+            this.textBoxMileage = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -124,6 +123,8 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBoxGNSS = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -212,9 +213,10 @@
             // 
             // groupBox6
             // 
-            this.groupBox6.Controls.Add(this.textBox9);
-            this.groupBox6.Controls.Add(this.textBox8);
-            this.groupBox6.Controls.Add(this.textBox6);
+            this.groupBox6.Controls.Add(this.textBoxGNSS);
+            this.groupBox6.Controls.Add(this.label12);
+            this.groupBox6.Controls.Add(this.textBoxOli);
+            this.groupBox6.Controls.Add(this.textBoxMileage);
             this.groupBox6.Controls.Add(this.label11);
             this.groupBox6.Controls.Add(this.label10);
             this.groupBox6.Location = new System.Drawing.Point(1027, 4);
@@ -224,28 +226,21 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "附加信息";
             // 
-            // textBox9
+            // textBoxOli
             // 
-            this.textBox9.Location = new System.Drawing.Point(121, 21);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(41, 23);
-            this.textBox9.TabIndex = 4;
-            this.textBox9.Text = "5";
+            this.textBoxOli.Location = new System.Drawing.Point(46, 52);
+            this.textBoxOli.Name = "textBoxOli";
+            this.textBoxOli.Size = new System.Drawing.Size(116, 23);
+            this.textBoxOli.TabIndex = 3;
+            this.textBoxOli.Text = "1000";
             // 
-            // textBox8
+            // textBoxMileage
             // 
-            this.textBox8.Location = new System.Drawing.Point(46, 52);
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(116, 23);
-            this.textBox8.TabIndex = 3;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(46, 21);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(69, 23);
-            this.textBox6.TabIndex = 2;
-            this.textBox6.Text = "10000";
+            this.textBoxMileage.Location = new System.Drawing.Point(46, 21);
+            this.textBoxMileage.Name = "textBoxMileage";
+            this.textBoxMileage.Size = new System.Drawing.Size(116, 23);
+            this.textBoxMileage.TabIndex = 2;
+            this.textBoxMileage.Text = "123450";
             // 
             // label11
             // 
@@ -1101,10 +1096,10 @@
             // 
             // Column5
             // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Red;
-            this.Column5.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Red;
+            this.Column5.DefaultCellStyle = dataGridViewCellStyle2;
             this.Column5.HeaderText = "";
             this.Column5.Name = "Column5";
             this.Column5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -1231,6 +1226,23 @@
             this.toolStripStatusLabel2.ForeColor = System.Drawing.SystemColors.Highlight;
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 86);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(44, 17);
+            this.label12.TabIndex = 5;
+            this.label12.Text = "卫星：";
+            // 
+            // textBoxGNSS
+            // 
+            this.textBoxGNSS.Location = new System.Drawing.Point(46, 83);
+            this.textBoxGNSS.Name = "textBoxGNSS";
+            this.textBoxGNSS.Size = new System.Drawing.Size(116, 23);
+            this.textBoxGNSS.TabIndex = 6;
+            this.textBoxGNSS.Text = "10";
             // 
             // Form1
             // 
@@ -1360,9 +1372,8 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.TextBox textBox9;
-        private System.Windows.Forms.TextBox textBox8;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox textBoxOli;
+        private System.Windows.Forms.TextBox textBoxMileage;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button1;
@@ -1376,6 +1387,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.CheckBox checkBoxPump;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox textBoxGNSS;
     }
 }
 
