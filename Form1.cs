@@ -153,12 +153,15 @@ namespace GT808Simulator
 
             //string s1 = "6264413230323030353235313731333034D3";
             string s1 = "4333434535394635453741463437374238434136364138354331314132363837D9";
-            
+
             byte[] b1 = HexStrTobyte(s1);
             //Buffer.BlockCopy(bytesReceived, HeadPack.PackSize - ClientRegistReturnPack.PackSize + 1, authCodeByte, 0, authCodeByte.Length);
 
             //byte[] carNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim());
-
+            //MessageIds.
+            //MessageIds aaa = (MessageIds)Enum.Parse(typeof(MessageIds), cbFace.Text);
+            string e1=Enum.GetName(typeof(MessageIds), 512);
+            string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>(MessageIds.PositionReport);
             string ss = System.Text.Encoding.Default.GetString(b1);
 
 
@@ -399,7 +402,10 @@ namespace GT808Simulator
             bytesSend = (new byte[] { 0x7e }
             .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
             .Concat(new byte[] { 0x7e })).ToArray();
-
+            //////////////////////////////////////////////////////////////////////////
+            //string e1 = Enum.GetName(typeof(MessageIds), Convert.ToInt32(head.MessageId));
+            //string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>(MessageIds.PositionReport);
+            /////////////////////////////////////////////////////////////////////////////
             this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'),0, bytesSend.ToHexString());
 
             //Console.WriteLine("{0} {1}",head.SeqNO, bytesSend.ToHexString());
