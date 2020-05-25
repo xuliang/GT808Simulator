@@ -477,7 +477,7 @@ namespace GT808Simulator
         public byte CarColor;
 
         //最后是GBK字串,车牌号
-        public byte[] CarNumber;
+        //public byte[] CarNumber;
     }
 
     /// <summary>
@@ -501,7 +501,7 @@ namespace GT808Simulator
         /// <summary>
         /// 鉴权码
         /// </summary>
-        public byte[] AuthCode;
+        //public byte[] AuthCode;
     }
 
     /// <summary>

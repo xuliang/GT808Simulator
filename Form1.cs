@@ -142,12 +142,20 @@ namespace GT808Simulator
 
 
             //7E8100002301234567898700020002004130433443463637303945333439344138323033443839393232434246393537A07E
-            //string s1 = "3736424146354237363246453430393341393035313630414136414435313032DE";
-            //byte[] b1 = HexStrTobyte(s1);
+            //string s1 = "81000014012345678987000C-000100-6264413230323030353235313731333034D3";
+            //                   810000230123456789870001-000100-4333434535394635453741463437374238434136364138354331314132363837D97E
 
-            //string ss = System.Text.Encoding.Default.GetString(b1);
+            //string s1 = "6264413230323030353235313731333034D3";
+            string s1 = "4333434535394635453741463437374238434136364138354331314132363837D9";
+            
+            byte[] b1 = HexStrTobyte(s1);
+            //Buffer.BlockCopy(bytesReceived, HeadPack.PackSize - ClientRegistReturnPack.PackSize + 1, authCodeByte, 0, authCodeByte.Length);
 
-          
+            //byte[] carNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim());
+
+            string ss = System.Text.Encoding.Default.GetString(b1);
+
+
         }
 
         private byte[] HexStrTobyte(string hexString)
@@ -229,11 +237,14 @@ namespace GT808Simulator
                 Manufacturer = new byte[5],
                 DeviceModel = new byte[20],
                 DeviceId = new byte[7],
-                CarColor = 2,
-                CarNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim())
+                CarColor = 2
+                //CarNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim())
             };
+            byte[] carNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim());
             //7E0100002D01234567898700010020044C000000000000000000000000000000000000000000000000000000000000000002F02716CA9D010000DE7E
             byte[] bytesSend = RawFormatter.Instance.Struct2Bytes(pack);
+            //加上车牌
+            bytesSend = bytesSend.Concat(carNumber).ToArray();
 
             BodyPropertyHelper.SetMessageLength(ref head.BodyProp, (ushort)bytesSend.Length);
 
@@ -310,7 +321,7 @@ namespace GT808Simulator
 
             # region 附加信息
             //里程
-            byte[] additionals = (new byte[] { 0x01 }.Concat(new byte[] { 0x04 }).Concat(Convert.ToInt32(textBoxMileage.Text).intToBytes2())).ToArray();//textBoxMileage
+            byte[] additionals = (new byte[] { 0x01 }.Concat(new byte[] { 0x04 }).Concat(BitConverter.GetBytes(Convert.ToInt32(textBoxMileage.Text)))).ToArray();//textBoxMileage
             //油量
             additionals = additionals.Concat(new byte[] { 0x02 }.Concat(new byte[] { 0x02 }).Concat(BitConverter.GetBytes(Convert.ToInt16(textBoxOli.Text)))).ToArray();
             //定位卫星数
@@ -396,7 +407,6 @@ namespace GT808Simulator
                 byte[] buffer = bufferRecv;
 
                 int received = tcp.Receive(buffer);
-                //tcp.ReceiveAsync(OnReceiveCompleted());
 
                 byte[] originalBytes = new byte[received];
                 Buffer.BlockCopy(buffer, 0, originalBytes, 0, received);
@@ -406,12 +416,16 @@ namespace GT808Simulator
                 HeadPack headPack = new HeadPack();
                 RawFormatter.Instance.Bytes2Struct(headPack, bytesReceived, 0, HeadPack.PackSize);
                 byte result = 0;
-
-                if (headPack.MessageId == (ushort)MessageIds.ClientRegistReturn)
+                string authCode = "";
+                if (headPack.MessageId == (ushort)MessageIds.ClientRegistReturn)//注册应答包
                 {
                     ClientRegistReturnPack pack = new ClientRegistReturnPack();
                     RawFormatter.Instance.Bytes2Struct(pack, bytesReceived, HeadPack.PackSize, ClientRegistReturnPack.PackSize);
                     result = pack.Result;
+                    byte[] authCodeByte = new byte[bytesReceived.Length- HeadPack.PackSize- ClientRegistReturnPack.PackSize-1];
+                    Buffer.BlockCopy(bytesReceived, HeadPack.PackSize + ClientRegistReturnPack.PackSize, authCodeByte, 0, authCodeByte.Length);
+                    //注册鉴权码
+                    authCode = System.Text.Encoding.Default.GetString(authCodeByte);
                 }
                 else//服务器通用应答包
                 {
@@ -426,8 +440,8 @@ namespace GT808Simulator
                 this.dataGridView1.Rows[index].Cells[2].Value = DateTime.Now;
                 this.dataGridView1.Rows[index].Cells[3].Value = headPack.SeqNO;
                 this.dataGridView1.Rows[index].Cells[4].Value = "0x" + Convert.ToString(headPack.MessageId, 16).PadLeft(4, '0');
-                this.dataGridView1.Rows[index].Cells[5].Value = result;
-                this.dataGridView1.Rows[index].Cells[6].Value = originalBytes.ToHexString();//bytesReceived.ToHexString();
+                this.dataGridView1.Rows[index].Cells[5].Value = result+ ((authCode) != "" ? "(" +authCode+")" : "") ;
+                this.dataGridView1.Rows[index].Cells[6].Value = originalBytes.ToHexString();
 
                 DataGridViewCellStyle style = new DataGridViewCellStyle();
                 style.BackColor = Color.SkyBlue;
