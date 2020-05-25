@@ -161,6 +161,9 @@
     <Content Include="functionlist.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\dialog-warning.png" />
+    <None Include="Resources\dialog-topic.png" />
+    <None Include="Resources\dialog-todo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

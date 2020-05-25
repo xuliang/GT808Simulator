@@ -26,7 +26,7 @@ namespace GT808Simulator
         private int port;
         //private string deviceId;
         Random r = new Random();
-        Socket tcp = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        Socket tcp;// = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private double initLat = 38.01342;
         private double initLon = 114.560478;
         private int messageID;
@@ -43,11 +43,6 @@ namespace GT808Simulator
             ip = line.Substring(0, pos);
             string strPort = line.Substring(pos + 1);
             int.TryParse(strPort, out port);
-            //if (txtLat.Text.Trim() != "" && txtLon.Text.Trim() != "")
-            //{
-            //    initLat = Convert.ToDouble(txtLat.Text);
-            //    initLon = Convert.ToDouble(txtLon.Text);
-            //}
             this.latlonBuilder = new LatlonBuilder(initLat, initLon, 31.802893, 39.300299, 104.941406, 117.861328);
         }
 
@@ -69,14 +64,16 @@ namespace GT808Simulator
         {
             try
             {
+                tcp = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 tcp.Connect(IPAddress.Parse(ip), port);
-                toolStripStatusLabel1.Text = "已连接：" + this.ip + ":" + this.port;
-                toolStripStatusLabel1.ForeColor = Color.Green;
-                if(checkBoxPump.Checked)
+                if (tcp.Connected)
                 {
-
+                    btnConnect.Enabled = false;
+                    btnClose.Enabled = true;
+                    toolStripStatusLabel1.Text = "已连接：" + this.ip + ":" + this.port;
+                    toolStripStatusLabel1.ForeColor = Color.Green;
+                    MessageBox.Show("成功连接到服务器：" + this.ip + ":" + this.port, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                MessageBox.Show("成功连接到服务器：" + this.ip + ":" + this.port, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             //catch (ThreadAbortException)
             //{
@@ -85,7 +82,38 @@ namespace GT808Simulator
             catch (Exception exp)
             {
                 toolStripStatusLabel1.Text = "连接失败：" + this.ip + ":" + this.port;
+                MessageBox.Show(exp.Message);
+                log.Error(exp);
+            }
+        }
 
+        /// <summary>
+        /// 断开服务器连接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MessageBox.Show("确认断开服务器？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    tcp.Disconnect(false);
+                    if (!tcp.Connected)
+                    {
+                        tcp.Shutdown(SocketShutdown.Both);
+                        tcp.Close();
+                        btnConnect.Enabled = true;
+                        btnClose.Enabled = false;
+                        toolStripStatusLabel1.Text = "未连接";
+                        toolStripStatusLabel1.ForeColor = Color.Red;
+                        MessageBox.Show("成功断开服务器：" + this.ip + ":" + this.port, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                toolStripStatusLabel1.Text = "未连接";
                 MessageBox.Show(exp.Message);
                 log.Error(exp);
             }
@@ -104,10 +132,7 @@ namespace GT808Simulator
             }
             catch { }
         }
-        private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            //MessageBox.Show(e.ToString());
-        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             //   8100-0003-0-10302035743-FFFF00010397"
@@ -117,10 +142,10 @@ namespace GT808Simulator
 
 
             //7E8100002301234567898700020002004130433443463637303945333439344138323033443839393232434246393537A07E
-            string s1 = "3736424146354237363246453430393341393035313630414136414435313032DE";
-            byte[] b1 = HexStrTobyte(s1);
+            //string s1 = "3736424146354237363246453430393341393035313630414136414435313032DE";
+            //byte[] b1 = HexStrTobyte(s1);
 
-            string ss = System.Text.Encoding.Default.GetString(b1);
+            //string ss = System.Text.Encoding.Default.GetString(b1);
 
           
         }
@@ -141,6 +166,8 @@ namespace GT808Simulator
         {
             if(!tcp.Connected)
             {
+                btnConnect.Enabled = true;
+                btnClose.Enabled = false;
                 MessageBox.Show("请先连接服务器", "提示");
                 return;
             }
@@ -170,6 +197,20 @@ namespace GT808Simulator
                     break;
             }
         }
+
+        /// <summary>
+        /// 定时发送心跳
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (checkBoxPump.Checked && tcp!=null && tcp.Connected)
+            {
+                //发送心跳包
+                SendClientPump();
+            }
+        }
         #endregion
 
         #region 指令处理
@@ -179,7 +220,7 @@ namespace GT808Simulator
         /// </summary>
         private void SendClientRegist()
         {
-            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)this.messageID, BodyProp = (ushort)0 };
+            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)MessageIds.ClientRegist, BodyProp = (ushort)0 };
             head.SetDeviceId(this.txtDeviceId.Text.Trim());
             ClientRegistPack pack = new ClientRegistPack()
             {
@@ -213,7 +254,7 @@ namespace GT808Simulator
         /// </summary>
         private void SendClientPump()
         {
-            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)this.messageID, BodyProp = (ushort)0 };
+            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)MessageIds.ClientPump, BodyProp = (ushort)0 };
             head.SetDeviceId(this.txtDeviceId.Text.Trim());
             ClientPumpPack pack = new ClientPumpPack();
 
@@ -229,6 +270,8 @@ namespace GT808Simulator
             .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
             .Concat(new byte[] { 0x7e })).ToArray();
 
+            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'), 0, bytesSend.ToHexString());
+
             SendMessage(bytesSend); ;
         }
         /// <summary>
@@ -236,8 +279,7 @@ namespace GT808Simulator
         /// </summary>
         private void SendPosition()
         {
-            //HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)MessageIds.PositionReport, BodyProp = (ushort)0 };
-            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)this.messageID, BodyProp = (ushort)0 };
+            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)MessageIds.PositionReport, BodyProp = (ushort)0 };
             head.SetDeviceId(this.txtDeviceId.Text.Trim());
 
             double lat;
@@ -270,7 +312,7 @@ namespace GT808Simulator
             //里程
             byte[] additionals = (new byte[] { 0x01 }.Concat(new byte[] { 0x04 }).Concat(Convert.ToInt32(textBoxMileage.Text).intToBytes2())).ToArray();//textBoxMileage
             //油量
-            additionals = additionals.Concat(new byte[] { 0x02 }.Concat(new byte[] { 0x02 }).Concat(Convert.ToInt32(textBoxOli.Text).intToBytes2())).ToArray();
+            additionals = additionals.Concat(new byte[] { 0x02 }.Concat(new byte[] { 0x02 }).Concat(BitConverter.GetBytes(Convert.ToInt16(textBoxOli.Text)))).ToArray();
             //定位卫星数
             additionals = additionals.Concat(new byte[] { 0x31 }.Concat(new byte[] { 0x01 }).Concat(new byte[] { Convert.ToByte(textBoxGNSS.Text) })).ToArray();
 
@@ -309,6 +351,10 @@ namespace GT808Simulator
 
             SendMessage(bytesSend); ;
         }
+
+        #endregion
+
+        #region 发送和接收
 
         ushort seqNum = 0;
         ushort GetNextSeqNum()
@@ -363,13 +409,6 @@ namespace GT808Simulator
 
                 if (headPack.MessageId == (ushort)MessageIds.ClientRegistReturn)
                 {
-                    //7E8100002301030203574300030003003936424431303542324646373442323541374538433233314137334543443846BF7E
-                    //7E8100002301030203574300040004003242343831443441384641463431423938444237313339393635364141363230C47E
-                    //7E8100002301030203574300010001004541303242343439444131303437463138354344353442303243323343354343C77E
-                    //7E81000003010302035743-FFFF000103977E
-                    //7E81000003010302035743-0000000103977E
-                    //7E -8100-0003-010302035743-0000-00-02-03-94-7E
-
                     ClientRegistReturnPack pack = new ClientRegistReturnPack();
                     RawFormatter.Instance.Bytes2Struct(pack, bytesReceived, HeadPack.PackSize, ClientRegistReturnPack.PackSize);
                     result = pack.Result;
@@ -459,6 +498,11 @@ namespace GT808Simulator
             }
         }
         #endregion
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
+        }
     }
 
     /// <summary>

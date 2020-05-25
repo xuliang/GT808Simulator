@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,28 @@ namespace GT808Simulator
     /// </summary>
     public static class ExtensionMethods
     {
+        /// <summary>
+        /// get enum description by name
+        /// </summary>
+        /// <typeparam name="T">enum type</typeparam>
+        /// <param name="enumItemName">the enum name</param>
+        /// <returns></returns>
+        public static string GetDescriptionByName<T>(this T enumItemName)
+        {
+            FieldInfo fi = enumItemName.GetType().GetField(enumItemName.ToString());
+
+            DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(
+                typeof(DescriptionAttribute), false);
+
+            if (attributes != null && attributes.Length > 0)
+            {
+                return attributes[0].Description;
+            }
+            else
+            {
+                return enumItemName.ToString();
+            }
+        }
         //public static byte[] ToByteArray(this BitArray bits)
         //{
         //    int numBytes = bits.Count / 8;

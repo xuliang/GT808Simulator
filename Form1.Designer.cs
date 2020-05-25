@@ -28,20 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.textBoxGNSS = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.textBoxOli = new System.Windows.Forms.TextBox();
             this.textBoxMileage = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.checkBoxPump = new System.Windows.Forms.CheckBox();
+            this.btnClose = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.btnConnect = new System.Windows.Forms.Button();
             this.btnSend = new System.Windows.Forms.Button();
+            this.checkBoxPump = new System.Windows.Forms.CheckBox();
+            this.btnConnect = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.checkBox30 = new System.Windows.Forms.CheckBox();
             this.checkBox29 = new System.Windows.Forms.CheckBox();
@@ -103,6 +107,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -113,7 +119,8 @@
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.设置ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,8 +130,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.textBoxGNSS = new System.Windows.Forms.TextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -139,9 +145,14 @@
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -163,7 +174,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(1486, 673);
+            this.splitContainer1.Size = new System.Drawing.Size(1527, 673);
             this.splitContainer1.SplitterDistance = 271;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 1;
@@ -205,8 +216,8 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer2.Size = new System.Drawing.Size(1210, 673);
+            this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
+            this.splitContainer2.Size = new System.Drawing.Size(1251, 673);
             this.splitContainer2.SplitterDistance = 324;
             this.splitContainer2.SplitterWidth = 6;
             this.splitContainer2.TabIndex = 0;
@@ -221,14 +232,31 @@
             this.groupBox6.Controls.Add(this.label10);
             this.groupBox6.Location = new System.Drawing.Point(1027, 4);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(173, 125);
+            this.groupBox6.Size = new System.Drawing.Size(197, 125);
             this.groupBox6.TabIndex = 7;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "附加信息";
             // 
+            // textBoxGNSS
+            // 
+            this.textBoxGNSS.Location = new System.Drawing.Point(55, 83);
+            this.textBoxGNSS.Name = "textBoxGNSS";
+            this.textBoxGNSS.Size = new System.Drawing.Size(116, 23);
+            this.textBoxGNSS.TabIndex = 6;
+            this.textBoxGNSS.Text = "10";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(15, 86);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(44, 17);
+            this.label12.TabIndex = 5;
+            this.label12.Text = "卫星：";
+            // 
             // textBoxOli
             // 
-            this.textBoxOli.Location = new System.Drawing.Point(46, 52);
+            this.textBoxOli.Location = new System.Drawing.Point(55, 52);
             this.textBoxOli.Name = "textBoxOli";
             this.textBoxOli.Size = new System.Drawing.Size(116, 23);
             this.textBoxOli.TabIndex = 3;
@@ -236,7 +264,7 @@
             // 
             // textBoxMileage
             // 
-            this.textBoxMileage.Location = new System.Drawing.Point(46, 21);
+            this.textBoxMileage.Location = new System.Drawing.Point(55, 21);
             this.textBoxMileage.Name = "textBoxMileage";
             this.textBoxMileage.Size = new System.Drawing.Size(116, 23);
             this.textBoxMileage.TabIndex = 2;
@@ -245,7 +273,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 55);
+            this.label11.Location = new System.Drawing.Point(15, 55);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(44, 17);
             this.label11.TabIndex = 1;
@@ -254,7 +282,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 24);
+            this.label10.Location = new System.Drawing.Point(15, 24);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(44, 17);
             this.label10.TabIndex = 0;
@@ -262,51 +290,44 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.checkBoxPump);
+            this.groupBox5.Controls.Add(this.btnClose);
             this.groupBox5.Controls.Add(this.button1);
-            this.groupBox5.Controls.Add(this.btnConnect);
             this.groupBox5.Controls.Add(this.btnSend);
+            this.groupBox5.Controls.Add(this.checkBoxPump);
+            this.groupBox5.Controls.Add(this.btnConnect);
             this.groupBox5.Location = new System.Drawing.Point(1027, 137);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(173, 180);
+            this.groupBox5.Size = new System.Drawing.Size(197, 180);
             this.groupBox5.TabIndex = 6;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "操作";
             // 
-            // checkBoxPump
+            // btnClose
             // 
-            this.checkBoxPump.AutoSize = true;
-            this.checkBoxPump.Location = new System.Drawing.Point(111, 30);
-            this.checkBoxPump.Name = "checkBoxPump";
-            this.checkBoxPump.Size = new System.Drawing.Size(51, 21);
-            this.checkBoxPump.TabIndex = 5;
-            this.checkBoxPump.Text = "心跳";
-            this.checkBoxPump.UseVisualStyleBackColor = true;
+            this.btnClose.Enabled = false;
+            this.btnClose.Location = new System.Drawing.Point(8, 59);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(87, 33);
+            this.btnClose.TabIndex = 6;
+            this.btnClose.Text = "断开服务器";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(28, 150);
+            this.button1.Location = new System.Drawing.Point(103, 100);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(87, 33);
             this.button1.TabIndex = 3;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // btnConnect
-            // 
-            this.btnConnect.Location = new System.Drawing.Point(9, 23);
-            this.btnConnect.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(87, 33);
-            this.btnConnect.TabIndex = 2;
-            this.btnConnect.Text = "连接服务器";
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // btnSend
             // 
-            this.btnSend.Location = new System.Drawing.Point(46, 93);
+            this.btnSend.Location = new System.Drawing.Point(8, 140);
             this.btnSend.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(87, 33);
@@ -314,6 +335,29 @@
             this.btnSend.Text = "发送指令";
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            // 
+            // checkBoxPump
+            // 
+            this.checkBoxPump.AutoSize = true;
+            this.checkBoxPump.Checked = true;
+            this.checkBoxPump.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxPump.Location = new System.Drawing.Point(103, 26);
+            this.checkBoxPump.Name = "checkBoxPump";
+            this.checkBoxPump.Size = new System.Drawing.Size(51, 21);
+            this.checkBoxPump.TabIndex = 5;
+            this.checkBoxPump.Text = "心跳";
+            this.checkBoxPump.UseVisualStyleBackColor = true;
+            // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(8, 19);
+            this.btnConnect.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(87, 33);
+            this.btnConnect.TabIndex = 2;
+            this.btnConnect.Text = "连接服务器";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // groupBox4
             // 
@@ -1050,16 +1094,44 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "车牌号：";
             // 
+            // splitContainer3
+            // 
+            this.splitContainer3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.menuStrip2);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer3.Size = new System.Drawing.Size(1251, 343);
+            this.splitContainer3.SplitterDistance = 26;
+            this.splitContainer3.TabIndex = 1;
+            // 
+            // menuStrip2
+            // 
+            this.menuStrip2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.menuStrip2.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip2.Name = "menuStrip2";
+            this.menuStrip2.Size = new System.Drawing.Size(1249, 24);
+            this.menuStrip2.TabIndex = 0;
+            this.menuStrip2.Text = "menuStrip2";
+            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1208, 341);
+            this.tabControl1.Size = new System.Drawing.Size(1249, 311);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -1069,7 +1141,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage1.Size = new System.Drawing.Size(1200, 311);
+            this.tabPage1.Size = new System.Drawing.Size(1241, 281);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "数据包";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1085,14 +1157,14 @@
             this.Column4,
             this.Column6,
             this.Column7});
+            this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 4);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(1194, 303);
+            this.dataGridView1.Size = new System.Drawing.Size(1235, 273);
             this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_RowHeaderMouseClick);
             // 
             // Column5
             // 
@@ -1143,16 +1215,20 @@
             this.Column7.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column7.Width = 500;
             // 
-            // tabPage2
+            // contextMenuStrip1
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage2.Size = new System.Drawing.Size(1198, 313);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItem1.Text = "清空列表";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // menuStrip1
             // 
@@ -1161,7 +1237,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(1486, 27);
+            this.menuStrip1.Size = new System.Drawing.Size(1527, 27);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -1203,7 +1279,7 @@
             this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 700);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1486, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1527, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -1227,28 +1303,17 @@
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
             // 
-            // label12
+            // timer1
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 86);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(44, 17);
-            this.label12.TabIndex = 5;
-            this.label12.Text = "卫星：";
-            // 
-            // textBoxGNSS
-            // 
-            this.textBoxGNSS.Location = new System.Drawing.Point(46, 83);
-            this.textBoxGNSS.Name = "textBoxGNSS";
-            this.textBoxGNSS.Size = new System.Drawing.Size(116, 23);
-            this.textBoxGNSS.TabIndex = 6;
-            this.textBoxGNSS.Text = "10";
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 30000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1486, 722);
+            this.ClientSize = new System.Drawing.Size(1527, 722);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -1279,9 +1344,15 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel1.PerformLayout();
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -1327,7 +1398,6 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.CheckBox checkBox18;
         private System.Windows.Forms.CheckBox checkBox13;
         private System.Windows.Forms.CheckBox checkBox8;
@@ -1389,6 +1459,12 @@
         private System.Windows.Forms.CheckBox checkBoxPump;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textBoxGNSS;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.MenuStrip menuStrip2;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }
 
