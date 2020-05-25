@@ -368,7 +368,7 @@ namespace GT808Simulator
 
             # region 附加信息
             //里程
-            byte[] additionals = (new byte[] { 0x01 }.Concat(new byte[] { 0x04 }).Concat(BitConverter.GetBytes(Convert.ToInt32(textBoxMileage.Text)))).ToArray();//textBoxMileage
+            byte[] additionals = (new byte[] { 0x01 }.Concat(new byte[] { 0x04 }).Concat(Convert.ToInt32(textBoxMileage.Text).intToBytes2())).ToArray();//textBoxMileage
             //油量
             additionals = additionals.Concat(new byte[] { 0x02 }.Concat(new byte[] { 0x02 }).Concat(BitConverter.GetBytes(Convert.ToInt16(textBoxOli.Text)))).ToArray();
             //定位卫星数
