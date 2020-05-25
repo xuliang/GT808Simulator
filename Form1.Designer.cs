@@ -89,6 +89,8 @@
             this.checkBox41 = new System.Windows.Forms.CheckBox();
             this.checkBox40 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textBoxAuthCode = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.domainUpDown1 = new System.Windows.Forms.DomainUpDown();
             this.txtAltitude = new System.Windows.Forms.TextBox();
@@ -322,10 +324,12 @@
             this.button1.TabIndex = 3;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnSend
             // 
+            this.btnSend.Enabled = false;
             this.btnSend.Location = new System.Drawing.Point(8, 140);
             this.btnSend.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnSend.Name = "btnSend";
@@ -888,6 +892,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.textBoxAuthCode);
+            this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.domainUpDown1);
             this.groupBox2.Controls.Add(this.txtAltitude);
@@ -907,6 +913,24 @@
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "位置信息";
+            // 
+            // textBoxAuthCode
+            // 
+            this.textBoxAuthCode.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.textBoxAuthCode.Location = new System.Drawing.Point(267, 89);
+            this.textBoxAuthCode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.textBoxAuthCode.Name = "textBoxAuthCode";
+            this.textBoxAuthCode.Size = new System.Drawing.Size(116, 23);
+            this.textBoxAuthCode.TabIndex = 13;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(214, 92);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(56, 17);
+            this.label13.TabIndex = 12;
+            this.label13.Text = "鉴权码：";
             // 
             // label9
             // 
@@ -1464,6 +1488,8 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.TextBox textBoxAuthCode;
+        private System.Windows.Forms.Label label13;
     }
 }
 

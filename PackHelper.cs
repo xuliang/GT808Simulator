@@ -18,6 +18,22 @@ namespace GT808Simulator
     public static class ExtensionMethods
     {
         /// <summary>
+        /// 十六进制字符串转byte[]
+        /// </summary>
+        /// <param name="hexString"></param>
+        /// <returns></returns>
+        private static byte[] HexStrTobyte(this string hexString)
+        {
+            hexString = hexString.Replace(" ", "");
+            if ((hexString.Length % 2) != 0)
+                hexString += " ";
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2).Trim(), 16);
+            return returnBytes;
+        }
+
+        /// <summary>
         /// get enum description by name
         /// </summary>
         /// <typeparam name="T">enum type</typeparam>
@@ -427,14 +443,22 @@ namespace GT808Simulator
         public byte Result;
     }
 
-    /// <summary>
-    /// 终端心跳(0x0002)
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-    public class ClientPumpPack
-    {
-        //心跳包消息体为空
-    }
+    ///// <summary>
+    ///// 终端心跳(0x0002)
+    ///// </summary>
+    //[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
+    //public class ClientPumpPack
+    //{
+    //    //心跳包消息体为空
+    //}
+    ///// <summary>
+    ///// 终端鉴权(0x0102)
+    ///// </summary>
+    //[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
+    //public class ClientAuthPack
+    //{
+    //    //终端鉴权包
+    //}
     /// <summary>
     /// 终端注册 最后是GBK字串,车牌号(0x0100)
     /// </summary>

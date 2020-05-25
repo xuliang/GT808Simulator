@@ -30,7 +30,7 @@ namespace GT808Simulator
         private double initLat = 38.01342;
         private double initLon = 114.560478;
         private int messageID;
-
+        //private string authCodeString = "";
         public Form1()
         {
             log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
@@ -70,6 +70,7 @@ namespace GT808Simulator
                 {
                     btnConnect.Enabled = false;
                     btnClose.Enabled = true;
+                    btnSend.Enabled = true;
                     toolStripStatusLabel1.Text = "已连接：" + this.ip + ":" + this.port;
                     toolStripStatusLabel1.ForeColor = Color.Green;
                     MessageBox.Show("成功连接到服务器：" + this.ip + ":" + this.port, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -87,6 +88,10 @@ namespace GT808Simulator
             }
         }
 
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
+        }
         /// <summary>
         /// 断开服务器连接
         /// </summary>
@@ -105,6 +110,7 @@ namespace GT808Simulator
                         tcp.Close();
                         btnConnect.Enabled = true;
                         btnClose.Enabled = false;
+                        btnSend.Enabled = false;
                         toolStripStatusLabel1.Text = "未连接";
                         toolStripStatusLabel1.ForeColor = Color.Red;
                         MessageBox.Show("成功断开服务器：" + this.ip + ":" + this.port, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -176,12 +182,12 @@ namespace GT808Simulator
             {
                 btnConnect.Enabled = true;
                 btnClose.Enabled = false;
-                MessageBox.Show("请先连接服务器", "提示");
+                MessageBox.Show("请先连接服务器", "提示",MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (this.messageID == 0)
             {
-                MessageBox.Show("请在左侧选择正确的指令", "提示");
+                MessageBox.Show("请在左侧选择正确的指令", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             switch (this.messageID)
@@ -199,6 +205,16 @@ namespace GT808Simulator
                 case (int)MessageIds.ClientRegist:
                     {
                         SendClientRegist();
+                        break;
+                    }
+                case (int)MessageIds.ClientAuth:
+                    {
+                        if (this.textBoxAuthCode.Text.Trim() == "")
+                        {
+                            MessageBox.Show("请先填写鉴权码", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                        SendClientAuth();
                         break;
                     }
                 default:
@@ -240,8 +256,9 @@ namespace GT808Simulator
                 CarColor = 2
                 //CarNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim())
             };
+            //车牌号
             byte[] carNumber = System.Text.Encoding.GetEncoding("GBK").GetBytes(txtCarNumber.Text.Trim());
-            //7E0100002D01234567898700010020044C000000000000000000000000000000000000000000000000000000000000000002F02716CA9D010000DE7E
+
             byte[] bytesSend = RawFormatter.Instance.Struct2Bytes(pack);
             //加上车牌
             bytesSend = bytesSend.Concat(carNumber).ToArray();
@@ -261,15 +278,18 @@ namespace GT808Simulator
             SendMessage(bytesSend);
         }
         /// <summary>
-        /// 终端心跳
+        /// 
         /// </summary>
-        private void SendClientPump()
+        private void SendClientAuth()
         {
-            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)MessageIds.ClientPump, BodyProp = (ushort)0 };
+            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)MessageIds.ClientAuth, BodyProp = (ushort)0 };
             head.SetDeviceId(this.txtDeviceId.Text.Trim());
-            ClientPumpPack pack = new ClientPumpPack();
+            //ClientAuthPack pack = new ClientAuthPack();
 
-            byte[] bytesSend = RawFormatter.Instance.Struct2Bytes(pack);
+            //byte[] bytesSend = RawFormatter.Instance.Struct2Bytes(pack);
+            byte[] bytesSend = System.Text.Encoding.Default.GetBytes(this.textBoxAuthCode.Text.Trim());
+            //加上鉴权码
+            //bytesSend = bytesSend.Concat(authCode).ToArray();
 
             BodyPropertyHelper.SetMessageLength(ref head.BodyProp, (ushort)bytesSend.Length);
 
@@ -278,6 +298,30 @@ namespace GT808Simulator
             byte checkByte = PackHelper.CalcCheckByte(fullBytes, 0, fullBytes.Length);
 
             bytesSend = (new byte[] { 0x7e }
+            .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
+            .Concat(new byte[] { 0x7e })).ToArray();
+
+            this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0'), 0, bytesSend.ToHexString());
+
+            SendMessage(bytesSend); ;
+        }
+        /// <summary>
+        /// 终端心跳
+        /// </summary>
+        private void SendClientPump()
+        {
+            HeadPack head = new HeadPack() { SeqNO = GetNextSeqNum(), MessageId = (ushort)MessageIds.ClientPump, BodyProp = (ushort)0 };
+            head.SetDeviceId(this.txtDeviceId.Text.Trim());
+            //ClientPumpPack pack = new ClientPumpPack();
+            //byte[] bytesSend = RawFormatter.Instance.Struct2Bytes(pack);
+            //BodyPropertyHelper.SetMessageLength(ref head.BodyProp, (ushort)bytesSend.Length);
+            BodyPropertyHelper.SetMessageLength(ref head.BodyProp, (ushort)0);
+
+            byte[] headBytes = RawFormatter.Instance.Struct2Bytes(head);
+            byte[] fullBytes = headBytes;// headBytes.Concat(bytesSend).ToArray();
+            byte checkByte = PackHelper.CalcCheckByte(fullBytes, 0, fullBytes.Length);
+
+            byte[]  bytesSend = (new byte[] { 0x7e }
             .Concat(PackHelper.EncodeBytes(fullBytes.Concat(new byte[] { checkByte })))
             .Concat(new byte[] { 0x7e })).ToArray();
 
@@ -426,6 +470,7 @@ namespace GT808Simulator
                     Buffer.BlockCopy(bytesReceived, HeadPack.PackSize + ClientRegistReturnPack.PackSize, authCodeByte, 0, authCodeByte.Length);
                     //注册鉴权码
                     authCode = System.Text.Encoding.Default.GetString(authCodeByte);
+                    this.textBoxAuthCode.Text = authCode;
                 }
                 else//服务器通用应答包
                 {
@@ -512,11 +557,6 @@ namespace GT808Simulator
             }
         }
         #endregion
-
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            dataGridView1.Rows.Clear();
-        }
     }
 
     /// <summary>
