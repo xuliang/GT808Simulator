@@ -153,7 +153,7 @@ namespace GT808Simulator
 
             //string s1 = "6264413230323030353235313731333034D3";
             string s1 = "4333434535394635453741463437374238434136364138354331314132363837D9";
-
+            
             byte[] b1 = HexStrTobyte(s1);
             //Buffer.BlockCopy(bytesReceived, HeadPack.PackSize - ClientRegistReturnPack.PackSize + 1, authCodeByte, 0, authCodeByte.Length);
 
@@ -495,7 +495,16 @@ namespace GT808Simulator
                 }
                 //////////////////////////////////////////////////////////////////////////
                 //string e1 = Enum.GetName(typeof(MessageIds), Convert.ToInt32(headPack.MessageId));
-                string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)Convert.ToInt32(headPack.MessageId));
+                string e2 = "未知消息类型";
+                try
+                {
+                    e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)Convert.ToInt32(headPack.MessageId));
+                }
+                catch(Exception ex)
+                {
+                    log.Error(ex.Message);
+                    MessageBox.Show("接收到未知消息类型", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
                 /////////////////////////////////////////////////////////////////////////////
                 int index = this.dataGridView1.Rows.Add();
                 this.dataGridView1.Rows[index].Cells[0].Value = "↓";
