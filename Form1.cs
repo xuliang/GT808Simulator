@@ -163,7 +163,12 @@ namespace GT808Simulator
             string e1=Enum.GetName(typeof(MessageIds), 512);
             string e2 = ExtensionMethods.GetDescriptionByName<MessageIds>((MessageIds)512);
             string ss = System.Text.Encoding.Default.GetString(b1);
-
+            //31.802893, 39.300299, 104.941406, 117.861328
+            double minLat = 31.802893;
+            double maxLat = 39.300299;
+            double minLon = 104.941406;
+            double maxLon = 117.861328;
+            Console.WriteLine(Math.Round(r.NextDouble() * (maxLat - minLat) + minLat, 5)+"--"+ Math.Round(r.NextDouble() * (maxLon - minLon) + minLon, 5));
 
         }
 
@@ -281,6 +286,10 @@ namespace GT808Simulator
             /////////////////////////////////////////////////////////////////////////////
             this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0') + "(" + e2 + ")", 0, bytesSend.ToHexString());
 
+            this.dataGridView1.FirstDisplayedScrollingRowIndex = this.dataGridView1.Rows.Count - 1;
+            //this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Selected = true;
+            //this.dataGridView1.CurrentCell = this.dataGridView1[0, this.dataGridView1.Rows.Count - 1];
+
             SendMessage(bytesSend);
         }
         /// <summary>
@@ -312,6 +321,10 @@ namespace GT808Simulator
             /////////////////////////////////////////////////////////////////////////////
             this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0') + "(" + e2 + ")", 0, bytesSend.ToHexString());
 
+            this.dataGridView1.FirstDisplayedScrollingRowIndex = this.dataGridView1.Rows.Count - 1;
+            //this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Selected = true;
+            //this.dataGridView1.CurrentCell = this.dataGridView1[0, this.dataGridView1.Rows.Count - 1];
+
             SendMessage(bytesSend); ;
         }
         /// <summary>
@@ -339,6 +352,10 @@ namespace GT808Simulator
             /////////////////////////////////////////////////////////////////////////////
             this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0') + "(" + e2 + ")", 0, bytesSend.ToHexString());
 
+            this.dataGridView1.FirstDisplayedScrollingRowIndex = this.dataGridView1.Rows.Count - 1;
+            //this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Selected = true;
+            //this.dataGridView1.CurrentCell = this.dataGridView1[0, this.dataGridView1.Rows.Count - 1];
+
             SendMessage(bytesSend); ;
         }
         /// <summary>
@@ -352,7 +369,10 @@ namespace GT808Simulator
             double lat;
             double lon;
             int speed = Convert.ToInt32(domainUpDown1.Text) + r.Next(10);// 10 + r.Next(90);
-            latlonBuilder.GetNextLatlon(speed, out lat, out lon);
+            //latlonBuilder.GetNextLatlon(speed, out lat, out lon);
+            lat = Convert.ToDouble(txtLat.Text);
+            lon = Convert.ToDouble(txtLon.Text);
+            
 
             #region 报警位设置
             BitValueAlerm bitAlerm = new BitValueAlerm(0);
@@ -417,6 +437,9 @@ namespace GT808Simulator
             /////////////////////////////////////////////////////////////////////////////
             this.dataGridView1.Rows.Add("↑", head.GetDeviceId(), DateTime.Now, head.SeqNO, "0x" + Convert.ToString(head.MessageId, 16).PadLeft(4, '0')+"("+e2+")",0, bytesSend.ToHexString());
 
+            this.dataGridView1.FirstDisplayedScrollingRowIndex = this.dataGridView1.Rows.Count - 1;
+            //this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Selected = true;
+            //this.dataGridView1.CurrentCell = this.dataGridView1[0, this.dataGridView1.Rows.Count - 1];
             //Console.WriteLine("{0} {1}",head.SeqNO, bytesSend.ToHexString());
 
             SendMessage(bytesSend); ;
@@ -438,26 +461,40 @@ namespace GT808Simulator
         private LatlonBuilder latlonBuilder;
         private bool SendMessage(byte[] bytesSend)
         {
-            //发送消息
-            SendBytes(tcp, bytesSend);
-            //控制台打印日志cpu占用太高
-            //Console.WriteLine("{0} {1}, LatLon:{2:0.000000},{3:0.000000}", head.GetDeviceId(), DateTime.Now.ToString(), lat, lon);
-            
             //等待接收服务端返回值
-            var success = true;
-            success = RecvBytes(tcp);
+            var success = false;
+            try
+            {
+                //发送消息
+                SendBytes(tcp, bytesSend);
+                //控制台打印日志cpu占用太高
+                //Console.WriteLine("{0} {1}, LatLon:{2:0.000000},{3:0.000000}", head.GetDeviceId(), DateTime.Now.ToString(), lat, lon);
+
+                success = RecvBytes(tcp);
+                return success;
+            }
+            catch (Exception ex)
+            {
+                btnConnect.Enabled = true;
+                btnClose.Enabled = false;
+                btnSend.Enabled = false;
+                toolStripStatusLabel1.Text = "未连接";
+                toolStripStatusLabel1.ForeColor = Color.Red;
+                log.Error(ex.Message, ex);
+                MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return success;
         }
         void SendBytes(Socket tcp, byte[] bytes)
-        {
-            lock (System.Reflection.MethodBase.GetCurrentMethod())
             {
-                if (bytes.Length != tcp.Send(bytes))
+                lock (System.Reflection.MethodBase.GetCurrentMethod())
                 {
-                    throw new SocketException((int)SocketError.ConnectionReset);
+                    if (bytes.Length != tcp.Send(bytes))
+                    {
+                        throw new SocketException((int)SocketError.ConnectionReset);
+                    }
                 }
             }
-        }
 
         private bool RecvBytes(Socket tcp)
         {
@@ -518,6 +555,10 @@ namespace GT808Simulator
                 DataGridViewCellStyle style = new DataGridViewCellStyle();
                 style.BackColor = Color.SkyBlue;
                 this.dataGridView1.Rows[index].DefaultCellStyle = style;
+
+                this.dataGridView1.FirstDisplayedScrollingRowIndex = this.dataGridView1.Rows.Count - 1;
+                //this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Selected = true;
+                //this.dataGridView1.CurrentCell = this.dataGridView1[0, this.dataGridView1.Rows.Count - 1];
 
                 //this.dataGridView1.Rows.Add("↓", headPack.GetDeviceId(), DateTime.Now, headPack.SeqNO, "0x" + Convert.ToString(headPack.MessageId, 16).PadLeft(4, '0'), pack.Result);
                 //Console.WriteLine("SeqNO:{0} MessageId:{1} Result:{2}", pack.SeqNO, pack.MessageId, pack.Result);
@@ -613,8 +654,9 @@ namespace GT808Simulator
 
         public bool GetNextLatlon(int speed, out double lat, out double lon)
         {
+            
             direction = (direction + (r.Next(30) - 15)) % 360;
-            double angle = Math.PI * this.direction / 180.0;
+            double angle = Math.PI * this.direction/ 180.0;
             double latAdd = speed / 1000.0 * Math.Sin(angle);
             double lonAdd = speed / 1000.0 * Math.Cos(angle);
 
@@ -626,7 +668,15 @@ namespace GT808Simulator
                 direction = (direction + 180) % 360;
                 return GetNextLatlon(speed, out lat, out lon);
             }
+
+            //this.lat = lat = Math.Round(r.NextDouble() * (this.maxLat - this.minLat) + this.minLat, 5); 
+            //this.lon = lon = Math.Round(r.NextDouble() * (this.maxLon - this.minLon) + this.minLon, 5);
             return true;
+        }
+        public double GetRandomNumber(double minimum, double maximum, int Len)   //Len小数点保留位数
+        {
+            Random random = new Random();
+            return Math.Round(random.NextDouble() * (maximum - minimum) + minimum, Len);
         }
     }
 }
