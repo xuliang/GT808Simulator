@@ -943,6 +943,7 @@
             // domainUpDown1
             // 
             this.domainUpDown1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.domainUpDown1.Items.Add("0");
             this.domainUpDown1.Items.Add("40");
             this.domainUpDown1.Items.Add("50");
             this.domainUpDown1.Items.Add("60");

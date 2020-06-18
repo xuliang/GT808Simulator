@@ -27,8 +27,9 @@ namespace GT808Simulator
         //private string deviceId;
         Random r = new Random();
         Socket tcp;// = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private double initLat = 38.01342;
-        private double initLon = 114.560478;
+                   //private double initLat = 32.191878;
+                   //private double initLon = 119.370384;
+        private LatlonBuilder latlonBuilder;
         private int messageID;
         //private string authCodeString = "";
         public Form1()
@@ -43,7 +44,14 @@ namespace GT808Simulator
             ip = line.Substring(0, pos);
             string strPort = line.Substring(pos + 1);
             int.TryParse(strPort, out port);
-            this.latlonBuilder = new LatlonBuilder(initLat, initLon, 31.802893, 39.300299, 104.941406, 117.861328);
+            //double minLat = 31.802893;
+            //double maxLat = 39.300299;
+            //double minLon = 104.941406;
+            //double maxLon = 117.861328;
+            //20.802893, 50.300299, 73.941406, 130.861328
+            //this.latlonBuilder = new LatlonBuilder(initLat, initLon, 20.802893, 50.300299, 73.941406, 130.861328);
+            this.latlonBuilder = new LatlonBuilder(Convert.ToDouble(txtLat.Text), Convert.ToDouble(txtLon.Text), 20.802893, 50.300299, 73.941406, 130.861328);
+
         }
 
         #region 窗体事件
@@ -369,9 +377,9 @@ namespace GT808Simulator
             double lat;
             double lon;
             int speed = Convert.ToInt32(domainUpDown1.Text) + r.Next(10);// 10 + r.Next(90);
-            //latlonBuilder.GetNextLatlon(speed, out lat, out lon);
-            lat = Convert.ToDouble(txtLat.Text);
-            lon = Convert.ToDouble(txtLon.Text);
+            latlonBuilder.GetNextLatlon(speed, out lat, out lon);
+            //lat = Convert.ToDouble(txtLat.Text);
+            //lon = Convert.ToDouble(txtLon.Text);
             
 
             #region 报警位设置
@@ -458,7 +466,7 @@ namespace GT808Simulator
             }
         }
         private byte[] bufferRecv = new byte[1024];
-        private LatlonBuilder latlonBuilder;
+
         private bool SendMessage(byte[] bytesSend)
         {
             //等待接收服务端返回值
