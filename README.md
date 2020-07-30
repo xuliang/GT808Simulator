@@ -14,3 +14,10 @@
 
 
 QQ交流群：140847537
+
+
+文本编辑器打开GT808Simulator.exe.config文件修改remoteServerPort值为自己的服务器地址。
+  <appSettings>
+    <!--服务器IP和端口(10.1.97.12:32195)-->
+    <add key="remoteServerPort" value="10.1.97.12:32195" />
+  </appSettings>
